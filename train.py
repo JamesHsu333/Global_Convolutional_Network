@@ -42,7 +42,6 @@ def train(model, optimizer, loss_fns, dataloader, metrics, params):
             if params.cuda:
                 train_batch, labels_batch = train_batch.cuda(
                     non_blocking=True), labels_batch.cuda(non_blocking=True)
-            train_batch, labels_batch = Variable(train_batch), Variable(labels_batch)
             labels_batch = labels_batch.float()
 
             # Forward

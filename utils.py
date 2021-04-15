@@ -58,7 +58,7 @@ def save_dict_to_json(d, json_path):
         json.dump(d, f, indent=4)
 
 def save_checkpoint(state, is_best, checkpoint):
-    filepath = os.path.join(checkpoint, 'last.path.tar')
+    filepath = os.path.join(checkpoint, 'last.pth.tar')
     if not os.path.exists(checkpoint):
         print("Checkpoint Directory does not exist! Making directory {}".format(checkpoint))
         os.mkdir(checkpoint)

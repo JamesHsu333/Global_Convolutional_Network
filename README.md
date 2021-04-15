@@ -1,18 +1,18 @@
 # Global Convolutional Network with PyTorch
-A toy experiment of FCN given VOC2012 Datasets.
+A toy experiment of Global Convolutional Network given VOC2012 Datasets.
 ## Usage
 ```bash
 git clone https://github.com/JamesHsu333/Global_Convolutional_Network.git
-cd FCN
+cd 
 pip install -r requirements.txt
 ```
 ## Dataset
-1. Download from 
+1. Download from Global_Convolutional_Network
 [VOC2012 Dataset](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar)
 2. Extract directory ``` JPEGImages``` and ``` SegmentationClass``` under directory ```data/```
 3. Extract ```train.txt``` and ```val.txt``` from ```VOC2012/ImageSets/Segmentation``` and put them under ```data/```
 ### Data Preprocessing
-The images of VOC2012 are 500x225 pixels big. Due to GPU memory limitations, they are resized to 224x224.
+The images of VOC2012 are 500x225 pixels. Due to GPU memory limitations, they are resized to 224x224.
 ## Model Architecture
 ```
 ----------------------------------------------------------------

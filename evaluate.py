@@ -31,41 +31,39 @@ def evaluate(model, loss_fns, dataloader, metrics, params):
     model.eval()
 
     summ = []
-    args = parser.parse_args()
     loss_avg = utils.RunningAverage()
 
     # Use tqdm for progress bar
     with tqdm(total=len(dataloader)) as t:
         for data_batch, labels_batch in dataloader:
-            if params.cuda:
-                data_batch, labels_batch = data_batch.cuda(
-                    non_blocking=True), labels_batch.cuda(non_blocking=True)
+            with torch.no_grad():
+                if params.cuda:
+                    data_batch, labels_batch = data_batch.cuda(
+                        non_blocking=True), labels_batch.cuda(non_blocking=True)
 
-            data_batch, labels_batch = Variable(data_batch), Variable(labels_batch)
-            labels_batch=labels_batch.float()
-            
-            output_batch = model(data_batch).float()
+                labels_batch=labels_batch.float()
+                
+                output_batch = model(data_batch).float()
 
-            loss = 0.4*loss_fns['BinaryCrossEntropy'](output_batch, labels_batch)+0.4*loss_fns['SoftDiceLoss'](output_batch, labels_batch)+0.2*loss_fns['SoftInvDiceLoss'](output_batch, labels_batch)
+                loss = 0.4*loss_fns['BinaryCrossEntropy'](output_batch, labels_batch)+0.4*loss_fns['SoftDiceLoss'](output_batch, labels_batch)+0.2*loss_fns['SoftInvDiceLoss'](output_batch, labels_batch)
 
-            output_batch = output_batch.data.cpu().numpy()
-            data_batch = data_batch.data.cpu().numpy()
-            labels_batch = labels_batch.data.cpu().numpy()
+                output_batch = output_batch.data.cpu().numpy()
+                data_batch = data_batch.data.cpu().numpy()
+                labels_batch = labels_batch.data.cpu().numpy()
 
-            # Show image
-            if args.show_images != 'no':
-                show_images(data_batch, labels_batch, output_batch)
-                plt.show()
+                # Show image
+                if args.show_images != 'no':
+                    show_images(data_batch, labels_batch, output_batch)
+                    plt.show()
 
-            summary_batch = {metric: metrics[metric](output_batch, labels_batch, 21)
-                            for metric in metrics}
-            summary_batch['loss'] = loss.item()
-            summ.append(summary_batch)
-            # update the average loss
-            loss_avg.update(loss.item())
-            t.set_postfix(loss='{:05.3f}'.format(loss_avg()))
-            t.update()
-
+                summary_batch = {metric: metrics[metric](output_batch, labels_batch, 21)
+                                for metric in metrics}
+                summary_batch['loss'] = loss.item()
+                summ.append(summary_batch)
+                # update the average loss
+                loss_avg.update(loss.item())
+                t.set_postfix(loss='{:05.3f}'.format(loss_avg()))
+                t.update()
     metrics_mean = {metric: np.mean([x[metric]
                                      for x in summ]) for metric in summ[0]}
     metrics_string = " ; ".join("{}: {:05.3f}".format(k, v)
